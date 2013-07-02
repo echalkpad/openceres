@@ -1,15 +1,15 @@
 package com.openceres.dao.out;
 
-import com.openceres.model.TaskInfo;
+import com.openceres.model.ActorInfo;
 
 public interface Out {
 
 	/**
-	 * 태스크 데이터를 입력한다. 
+	 * Write the actor's execution status. 
 	 * 
-	 * @param taskInfo	태스크 정보 
+	 * @param actorInfo	actor information
 	 */
-	public void writeTask(TaskInfo taskInfo);
+	public void writeLog(ActorInfo actorInfo);
 	
 
 }

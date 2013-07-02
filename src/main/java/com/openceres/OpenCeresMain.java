@@ -1,12 +1,10 @@
 package com.openceres;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.openceres.core.ActorRemoteSystemManager;
 import com.openceres.core.ActorSystemManager;
-import com.openceres.core.NotificationSystemManager;
 import com.openceres.core.ScheduleSystemManager;
 import com.openceres.core.SystemManager;
 import com.openceres.core.scheduler.QuartzScheduler;
@@ -15,9 +13,9 @@ import com.openceres.property.FrameworkConstant;
 public class OpenCeresMain {
 	private static final Logger LOG = LoggerFactory.getLogger(OpenCeresMain.class);
 
-	static {
-		PropertyConfigurator.configure("conf/log4j.properties");
-	}
+//	static {
+//		PropertyConfigurator.configure("conf/log4j.properties");
+//	}
   
 	SystemManager sysManager = null;
 
@@ -45,14 +43,14 @@ public class OpenCeresMain {
 			sysManager = ActorRemoteSystemManager.getInstance();
 			sysManager.startup();
 			break;
-		case "notification":
-			LOG.info("Starting NotificationSystem...");
-			sysManager = NotificationSystemManager.getInstance();
-			sysManager.startup();
-			break;
+//		case "notification":
+//			LOG.info("Starting NotificationSystem...");
+//			sysManager = NotificationSystemManager.getInstance();
+//			sysManager.startup();
+//			break;
 		default:
 			System.out
-					.println("Command : java AutoScaleMain \"scheduler\"|\"akka\"|\"notifiaction\"");
+					.println("Command : java OpenCeresMain \"scheduler\"|\"akka\"");
 			break;
 		}
 

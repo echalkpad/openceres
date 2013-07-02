@@ -13,16 +13,6 @@
 		<value>actor_log</value>
 	</property>
 
-	<property>
-		<name>global.log.perf.table</name>
-		<value>perf_log</value>
-	</property>
-
-	<property>
-		<name>global.log.task.table</name>
-		<value>task_log</value>
-	</property>
-
 	<!-- MongoDB Connection Info -->
 	<property>
 		<name>global.mongo.servers</name>

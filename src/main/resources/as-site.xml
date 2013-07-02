@@ -8,16 +8,6 @@
 	</property>
 
 	<property>
-		<name>as.service.name</name>
-		<value>api</value>
-	</property>
-
-	<property>
-		<name>as.server.port</name>
-		<value>8090</value>
-	</property>
-	
-	<property>
 		<name>as.mon.port</name>
 		<value>9010</value>
 	</property>

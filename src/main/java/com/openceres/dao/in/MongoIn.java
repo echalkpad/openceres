@@ -11,9 +11,12 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.openceres.config.AsConfiguration;
+import com.openceres.core.common.ActorRole;
+import com.openceres.core.common.ActorStatus;
 import com.openceres.exception.DbException;
-import com.openceres.model.TaskInfo;
-import com.openceres.property.FrameworkConstant;
+import com.openceres.model.ActorInfo;
+import com.openceres.property.Const;
 import com.openceres.util.MongoUtil;
 import com.openceres.util.StringUtils;
 
@@ -39,260 +42,44 @@ public class MongoIn implements In {
 		return mongoIn;
 	}
 
-	public String readTaskForWeb(TaskInfo taskFilter, long startTime, long endTime, 
-			int page, int limit, int filter) {
-		
-		int skip = (page - 1) * limit;
-		
+	public List<ActorInfo> readLog(ActorInfo actorInfoFilter, long startTime, long endTime) {
 		BasicDBObject query = new BasicDBObject();
-		query.append("timestamp", new BasicDBObject("$gt", startTime).append("$lt", endTime));
-		if (taskFilter != null) {
-			if (!StringUtils.isEmpty(taskFilter.getAction())) {
-				query.append("action", taskFilter.getAction());
+		query.append("start", new BasicDBObject("$gt", startTime).append("$lt", endTime));
+		if (actorInfoFilter != null) {
+			if (actorInfoFilter.getRole() != ActorRole.NONE) {
+				query.append("role", actorInfoFilter.getRole().name());
 			}
-			if (!StringUtils.isEmpty(taskFilter.getCommand())) {
-				query.append("command", taskFilter.getCommand());
+			if (!StringUtils.isEmpty(actorInfoFilter.getCommand())) {
+				query.append("command", actorInfoFilter.getCommand());
 			}
-			if (!StringUtils.isEmpty(taskFilter.getAlarmId())) {
-				query.append("alarmId", taskFilter.getAlarmId());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getAlarmName())) {
-				query.append("alarmName", taskFilter.getAlarmName());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getScheduleId())) {
-				query.append("scheduleId", taskFilter.getScheduleId());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getScheduleName())) {
-				query.append("scheduleName", taskFilter.getScheduleName());
-			}			
-			if (!StringUtils.isEmpty(taskFilter.getPolicyId())) {
-				query.append("policyId", taskFilter.getPolicyId());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getPolicyName())) {
-				query.append("policyName", taskFilter.getPolicyName());
-			}			
-			if (!StringUtils.isEmpty(taskFilter.getUser())) {
-				query.append("user", taskFilter.getUser());
-			}
-		}
-		
-		if(filter == 0) {
-			query.append("description", new BasicDBObject("$ne", "START"));
-		} else if(filter == 1) {
-			query.append("description", "SUCCESS");
-		} else if(filter == 2) {
-			List<String> descriptionFilter = new ArrayList<String>();
-			descriptionFilter.add("START");
-			descriptionFilter.add("SUCCESS");
-			query.append("description", new BasicDBObject("$nin", descriptionFilter));
-		}
-
-		BasicDBObject field = new BasicDBObject("_id", false);
-
-		BasicDBObject sort = new BasicDBObject("timestamp", -1);
-		
-		LOG.debug(query.toString());
-		if(skip != 0 && limit != 0) {
-			return mongoUtil.readAll(
-				FrameworkConstant.DB_TASK_COLLECTION, query, field, sort, skip, limit).toString();
-		} else if(skip == 0 && limit != 0){
-			return mongoUtil.readAll(
-					FrameworkConstant.DB_TASK_COLLECTION, query, field, sort, limit).toString();
-		} else {
-			return mongoUtil.readAll(
-					FrameworkConstant.DB_TASK_COLLECTION, query, field, sort).toString();
-		}
-	}
-	
-	public long readTaskCount(TaskInfo taskFilter, long startTime, long endTime, int filter)
-	{
-		BasicDBObject query = new BasicDBObject();
-		query.append("timestamp", new BasicDBObject("$gt", startTime).append("$lt", endTime));
-		if (taskFilter != null) {
-			if (!StringUtils.isEmpty(taskFilter.getAction())) {
-				query.append("action", taskFilter.getAction());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getCommand())) {
-				query.append("command", taskFilter.getCommand());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getAlarmId())) {
-				query.append("alarmId", taskFilter.getAlarmId());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getAlarmName())) {
-				query.append("alarmName", taskFilter.getAlarmName());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getScheduleId())) {
-				query.append("scheduleId", taskFilter.getScheduleId());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getScheduleName())) {
-				query.append("scheduleName", taskFilter.getScheduleName());
-			}			
-			if (!StringUtils.isEmpty(taskFilter.getPolicyId())) {
-				query.append("policyId", taskFilter.getPolicyId());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getPolicyName())) {
-				query.append("policyName", taskFilter.getPolicyName());
-			}			
-			if (!StringUtils.isEmpty(taskFilter.getUser())) {
-				query.append("user", taskFilter.getUser());
-			}
-		}
-		
-		if(filter == 0) {
-			query.append("description", new BasicDBObject("$ne", "START"));
-		} else if(filter == 1) {
-			query.append("description", "SUCCESS");
-		} else if(filter == 2) {
-			List<String> descriptionFilter = new ArrayList<String>();
-			descriptionFilter.add("START");
-			descriptionFilter.add("SUCCESS");
-			query.append("description", new BasicDBObject("$nin", descriptionFilter));
-		}
-
-		return mongoUtil.getRecordCount(FrameworkConstant.DB_TASK_COLLECTION, query);
-	}
-	
-	private ImmutableList<DBObject> readTaskAll(TaskInfo taskFilter, long startTime, long endTime, 
-			int skip, int limit) {
-		BasicDBObject query = new BasicDBObject();
-		query.append("timestamp", new BasicDBObject("$gt", startTime).append("$lt", endTime));
-		if (taskFilter != null) {
-			if (!StringUtils.isEmpty(taskFilter.getAction())) {
-				query.append("action", taskFilter.getAction());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getCommand())) {
-				query.append("command", taskFilter.getCommand());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getAlarmId())) {
-				query.append("alarmId", taskFilter.getAlarmId());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getAlarmName())) {
-				query.append("alarmName", taskFilter.getAlarmName());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getScheduleId())) {
-				query.append("scheduleId", taskFilter.getScheduleId());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getScheduleName())) {
-				query.append("scheduleName", taskFilter.getScheduleName());
-			}			
-			if (!StringUtils.isEmpty(taskFilter.getPolicyId())) {
-				query.append("policyId", taskFilter.getPolicyId());
-			}
-			if (!StringUtils.isEmpty(taskFilter.getPolicyName())) {
-				query.append("policyName", taskFilter.getPolicyName());
-			}			
-			if (!StringUtils.isEmpty(taskFilter.getUser())) {
-				query.append("user", taskFilter.getUser());
+			if (actorInfoFilter.getStatus() != ActorStatus.INIT) {
+				query.append("status", actorInfoFilter.getStatus().name());
 			}
 		}
 
 		BasicDBObject field = new BasicDBObject("_id", false);
-
-		BasicDBObject sort = new BasicDBObject("timestamp", -1);
-		
-		LOG.debug(query.toString());
-		if(skip != 0 && limit != 0) {
-			return mongoUtil.readAll(
-					FrameworkConstant.DB_TASK_COLLECTION, query, field, sort, skip, limit);
-		} else if(skip == 0 && limit != 0){
-			return mongoUtil.readAll(
-					FrameworkConstant.DB_TASK_COLLECTION, query, field, sort, limit);
-		} else {
-			return mongoUtil.readAll(
-					FrameworkConstant.DB_TASK_COLLECTION, query, field, sort);
-		}
-	}
-	
-	@Override
-	public String readTasksToJson(TaskInfo taskFilter, long startTime, long endTime) {
-		ImmutableList<DBObject> logList = readTaskAll(taskFilter, startTime, endTime, 0, PAGE_MAX);
-		
-		return logList.toString();
-	}
-	
-	@Override
-	public String readTasksToJson(TaskInfo taskFilter, long startTime, long endTime, int page, int limit)
-	{
-		int skip = (page - 1) * limit;
-		ImmutableList<DBObject> logList = readTaskAll(taskFilter, startTime, endTime, skip, limit);
-		
-		return logList.toString();
-	}
-	
-	@Override
-	public List<TaskInfo> readTasks(TaskInfo taskFilter, long startTime, long endTime) {
-		
-		ImmutableList<DBObject> logList = readTaskAll(taskFilter, startTime, endTime, 0, PAGE_MAX);
-
-		List<TaskInfo> taskInfos = new ArrayList<TaskInfo>();
-		for (DBObject log : logList) {
-			try {
-				taskInfos.add(toTaskInfoFromJson(log.toString()));
-			} catch (IOException e) {
-				LOG.error(e.getMessage());
-			}
-		}
-
-		return taskInfos;
-	}
-	
-	@Override
-	public List<TaskInfo> readTasks(TaskInfo taskFilter, long startTime, long endTime, int page, int limit)
-	{
-		int skip = (page - 1) * limit;
-
-		ImmutableList<DBObject> logList = readTaskAll(taskFilter, startTime, endTime, skip, limit);
-		
-		List<TaskInfo> taskInfos = new ArrayList<TaskInfo>();
-		for (DBObject log : logList) {
-			try {
-				taskInfos.add(toTaskInfoFromJson(log.toString()));
-			} catch (IOException e) {
-				LOG.error(e.getMessage());
-			}
-		}
-
-		return taskInfos;
-	}
-
-	@Override
-	public List<TaskInfo> readTasksWithCommand(String commandId) {
-		BasicDBObject query = new BasicDBObject();
-		query.append("command", commandId);
-
-		BasicDBObject field = new BasicDBObject("_id", false);
-
-		BasicDBObject sort = new BasicDBObject("timestamp", -1);
+		BasicDBObject sort = new BasicDBObject("start", -1);
 
 		LOG.debug(query.toString());
 		ImmutableList<DBObject> logList = mongoUtil.readAll(
-				FrameworkConstant.DB_TASK_COLLECTION, query, field, sort);
+				AsConfiguration.getValue(Const.DB_MONGO_LOG_COLLECTION), query, field, sort);
 
-		List<TaskInfo> actorInfos = new ArrayList<TaskInfo>();
+		List<ActorInfo> actorInfos = new ArrayList<ActorInfo>();
 		for (DBObject log : logList) {
 			try {
-				actorInfos.add(toTaskInfoFromJson(log.toString()));
+				actorInfos.add(toActorInfoFromJson(log.toString()));
 			} catch (IOException e) {
-				LOG.error(e.getMessage());
+				LOG.error(e.getMessage(), e);
 			}
 		}
 
 		return actorInfos;
-
-	}
-
-	private TaskInfo toTaskInfoFromJson(String jsonString) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-
-		TaskInfo taskInfo = mapper.readValue(jsonString, TaskInfo.class);
-
-		return taskInfo;
 	}
 	
-	public static void main(String args[])
-	{
-		MongoIn mongoIn = new MongoIn();
-		String result = mongoIn.readTaskCount(null, 0L, Long.MAX_VALUE, 2) + "";
-		System.out.println(result);
+	public static ActorInfo toActorInfoFromJson(String jsonString) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		ActorInfo actorInfo = mapper.readValue(jsonString, ActorInfo.class);
+
+		return actorInfo;
 	}
 }

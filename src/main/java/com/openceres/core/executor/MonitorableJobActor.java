@@ -8,12 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netflix.curator.framework.recipes.cache.PathChildrenCache;
+import com.openceres.config.AsConfiguration;
 import com.openceres.core.ActorManager;
 import com.openceres.core.command.TaskCommand;
 import com.openceres.core.common.ActorRole;
 import com.openceres.core.common.ActorStatus;
 import com.openceres.core.executor.listener.AkkaNodeListener;
+import com.openceres.dao.OutFactory;
+import com.openceres.dao.out.Out;
 import com.openceres.model.ActorInfo;
+import com.openceres.property.Const;
 
 /**
  * 
@@ -36,11 +40,14 @@ public abstract class MonitorableJobActor extends BaseJobActor
 	PathChildrenCache pathChildrenCache = null;
 	AkkaNodeListener akkaNodeListener = null;
 	
+	Out logOuter = null;
+	
 	public MonitorableJobActor()
 	{
 		super();
 		actorInfo.setRole(ActorRole.NONE);
 		actorInfo.setUri(this.getSelf().path().toString());
+		logOuter = OutFactory.getInstance(AsConfiguration.getValue(Const.LOGGER_DB));
 	}
 	
 	public MonitorableJobActor(ActorRole role)
@@ -105,19 +112,19 @@ public abstract class MonitorableJobActor extends BaseJobActor
 	
 	public void writeLog()
 	{
-		ActorManager.getInstance().writeLog(actorInfo.toJson());
+		logOuter.writeLog(actorInfo);
 	}
 	
 	public void writeLog(String message)
 	{
 		actorInfo.setDescription(message);
-		ActorManager.getInstance().writeLog(actorInfo.toJson());
+		logOuter.writeLog(actorInfo);
 	}
 	
 	public void writeError(String message)
 	{
 		actorInfo.setDescription("ERROR:" + message);
-		ActorManager.getInstance().writeLog(actorInfo.toJson());
+		logOuter.writeLog(actorInfo);
 	}
 	
 	public ActorInfo getActorInfo()

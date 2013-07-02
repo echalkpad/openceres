@@ -5,27 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.codehaus.jackson.map.ObjectMapper;
 
-import com.google.common.collect.ImmutableList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.netflix.curator.framework.recipes.cache.ChildData;
 import com.netflix.curator.framework.recipes.cache.PathChildrenCache;
 import com.openceres.config.AsConfiguration;
 import com.openceres.core.common.ActorRole;
-import com.openceres.core.common.ActorStatus;
 import com.openceres.core.common.ResultSet;
 import com.openceres.core.executor.listener.AkkaNodeListener;
-import com.openceres.exception.DbException;
 import com.openceres.exception.NotAvailableActorException;
 import com.openceres.model.ActorInfo;
 import com.openceres.property.Const;
-import com.openceres.util.MongoUtil;
 import com.openceres.util.Parser;
-import com.openceres.util.StringUtils;
 import com.openceres.util.ZkUtil;
 
 public class ActorManager {
@@ -45,8 +38,6 @@ public class ActorManager {
 
 	// Actor result 관리
 	final String resultPath = "results";
-
-	MongoUtil mongoUtil = null;
 
 	private ActorManager() {
 		// init();
@@ -79,13 +70,6 @@ public class ActorManager {
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
-
-		try {
-			mongoUtil = new MongoUtil();
-		} catch (DbException e) {
-			LOG.error(e.getMessage(), e);
-		}
-
 	}
 
 	public void close() {
@@ -453,44 +437,6 @@ public class ActorManager {
 	// return result;
 	// }
 
-	public void writeLog(String actorInfo) {
-		mongoUtil.insert(AsConfiguration.getValue(Const.DB_MONGO_LOG_COLLECTION), actorInfo);
-	}
-
-	public List<ActorInfo> readLog(ActorInfo actorInfoFilter, long startTime, long endTime) {
-		BasicDBObject query = new BasicDBObject();
-		query.append("start", new BasicDBObject("$gt", startTime).append("$lt", endTime));
-		if (actorInfoFilter != null) {
-			if (actorInfoFilter.getRole() != ActorRole.NONE) {
-				query.append("role", actorInfoFilter.getRole().name());
-			}
-			if (!StringUtils.isEmpty(actorInfoFilter.getCommand())) {
-				query.append("command", actorInfoFilter.getCommand());
-			}
-			if (actorInfoFilter.getStatus() != ActorStatus.INIT) {
-				query.append("status", actorInfoFilter.getStatus().name());
-			}
-		}
-
-		BasicDBObject field = new BasicDBObject("_id", false);
-		BasicDBObject sort = new BasicDBObject("start", -1);
-
-		LOG.debug(query.toString());
-		ImmutableList<DBObject> logList = mongoUtil.readAll(
-				AsConfiguration.getValue(Const.DB_MONGO_LOG_COLLECTION), query, field, sort);
-
-		List<ActorInfo> actorInfos = new ArrayList<ActorInfo>();
-		for (DBObject log : logList) {
-			try {
-				actorInfos.add(toActorInfoFromJson(log.toString()));
-			} catch (IOException e) {
-				LOG.error(e.getMessage(), e);
-			}
-		}
-
-		return actorInfos;
-	}
-
 	public void deleteCommandResults(String commandId) {
 		String nodeName = this.resultPath + "/" + commandId;
 
@@ -566,15 +512,5 @@ public class ActorManager {
 		ActorInfo actorInfo = mapper.readValue(jsonString, ActorInfo.class);
 
 		return actorInfo;
-	}
-
-	public static void main(String args[]) {
-		ActorManager actorManager = ActorManager.getInstance();
-		actorManager.start();
-		// actorManager.clearAllActors();
-		List<ActorInfo> actorInfos = actorManager.getAllData();
-		for (ActorInfo actorInfo : actorInfos) {
-			actorInfo.toString();
-		}
 	}
 }
