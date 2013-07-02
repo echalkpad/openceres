@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<configuration>
+
+	<property>
+		<name>zk.servers</name>
+		<value>localhost</value>
+	</property>
+
+	<property>
+		<name>as.service.name</name>
+		<value>api</value>
+	</property>
+
+	<property>
+		<name>as.server.port</name>
+		<value>8090</value>
+	</property>
+	
+	<property>
+		<name>as.mon.port</name>
+		<value>9010</value>
+	</property>
+	
+	<property>
+		<name>as.worker.count</name>
+		<value>5</value>
+	</property>
+</configuration>

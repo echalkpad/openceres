@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<configuration>
+
+	<!-- Database Info -->
+	<property>
+		<name>global.log.db</name>
+		<value>MONGO</value>
+	</property>
+
+	<property>
+		<name>global.log.actor.table</name>
+		<value>actor_log</value>
+	</property>
+
+	<property>
+		<name>global.log.perf.table</name>
+		<value>perf_log</value>
+	</property>
+
+	<property>
+		<name>global.log.task.table</name>
+		<value>task_log</value>
+	</property>
+
+	<!-- MongoDB Connection Info -->
+	<property>
+		<name>global.mongo.servers</name>
+		<value>localhost</value>
+	</property>
+
+	<property>
+		<name>global.mongo.servers.port</name>
+		<value>27017</value>
+	</property>
+
+	<property>
+		<name>global.mongo.db.name</name>
+		<value>openceres</value>
+	</property>
+
+	<property>
+		<name>global.mongo.db.write.concern</name>
+		<value>NORMAL</value>
+	</property>
+
+	<!-- Queue Connection Info -->
+	<property>
+		<name>global.queue.connection</name>
+		<value>tcp://localhost:61616</value>
+	</property>
+</configuration>
