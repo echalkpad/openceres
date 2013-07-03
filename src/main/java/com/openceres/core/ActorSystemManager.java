@@ -1,7 +1,7 @@
 package com.openceres.core;
 
+import org.apache.activemq.camel.component.ActiveMQComponent;
 import org.apache.camel.CamelContext;
-import org.apache.camel.component.activemq.ActiveMQComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class ActorSystemManager implements Bootable, SystemManager {
 		LOG.info("Initialize ActorSystemManager...");
 
 		ActorManager.getInstance().start();
-
+/*
 		String confString = 
 			"akka {\n" + 
 				"\tactor {\n" +
@@ -68,9 +68,11 @@ public class ActorSystemManager implements Bootable, SystemManager {
 			  	"\t}\n" +
 		  	"}";
 		Config conf = ConfigFactory.parseString(confString);
-		actorSystem = ActorSystem.create(FrameworkConstant.AKKA_MAIN_SYSTEM, ConfigFactory.load(conf));
+*/
+//		actorSystem = ActorSystem.create(FrameworkConstant.AKKA_MAIN_SYSTEM, ConfigFactory.load(conf));
+		actorSystem = ActorSystem.create(FrameworkConstant.AKKA_MAIN_SYSTEM);
 		
-		LOG.debug("Configuration:\n" + confString);
+//		LOG.debug("Configuration:\n" + confString);
 
 		// create proxy actor
 		proxyActorRef = actorSystem.actorOf(new Props(new UntypedActorFactory() {
@@ -101,16 +103,16 @@ public class ActorSystemManager implements Bootable, SystemManager {
 		// actorSystem.actorOf(new Props(MailConsumer.class), "mailConsumer");
 //		actorSystem.actorOf(new Props(MailProducer.class), "mailProducer");
 		
-		OpenCeresWas was = new OpenCeresWas();
-		
-		try 
-		{
-			was.start();
-		}
-		catch(Exception e)
-		{
-			LOG.error(e.getMessage(), e);
-		}
+//		OpenCeresWas was = new OpenCeresWas();
+//		
+//		try 
+//		{
+//			was.start();
+//		}
+//		catch(Exception e)
+//		{
+//			LOG.error(e.getMessage(), e);
+//		}
 	}
 
 	@Override

@@ -99,7 +99,6 @@ public class ProxyActor extends MonitorableJobActor {
 	private void init()
 	{
 		timeout = new Timeout(5, TimeUnit.SECONDS);
-		
 		// 현재 zookeeper 에 있는 마스터 액터 리스트를 가져온다.
 		List<ActorInfo> actorInfoList = ActorManager.getInstance()
 				.getDataByRole(ActorRole.MASTER);

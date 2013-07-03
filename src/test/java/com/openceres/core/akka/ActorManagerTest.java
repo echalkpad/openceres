@@ -14,7 +14,9 @@ public class ActorManagerTest {
 	
 	@Test
 	public void testGetData() {
+		logger.info("abc");
 		List<ActorInfo> data = ActorManager.getInstance().getAllData();
+		
 		for(ActorInfo datum : data)
 		{
 			logger.info(datum.toJson());

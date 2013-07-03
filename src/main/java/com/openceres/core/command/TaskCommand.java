@@ -14,16 +14,21 @@ import java.util.UUID;
  *
  */
 public class TaskCommand extends TimerBaseCommand {
-
-	private static final long serialVersionUID = 2013L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 271699790864797033L;
+	
+	static public int SINGLE_TYPE_JOB = 0;
+	static public int TRANSACTION_TYPE_JOB = 1;
 	
 	//0 : single Job, 1 : sequential Job
-	int type;
+	int type = 0;
 	
-	String taskClassName;
+	String taskClassName = "";
 	
-	TaskCommand parent;
-	TaskCommand child;
+	TaskCommand parent = null;
+	TaskCommand child = null;
 	
 	Map<String, Object> paremeterMap;
 	

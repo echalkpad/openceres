@@ -18,7 +18,7 @@ public class ResourceBundleEx
 {
 	private static final Logger logger = LoggerFactory.getLogger(ResourceBundleEx.class);
 	
-	private String[] propFiles = {Const.PROP_FILE_QUARTZ, Const.PROP_FILE_LOGGER};
+	private String[] propFiles = {Const.PROP_FILE_QUARTZ};
 	
 	private Map<String, Properties> propMap  = new HashMap<String, Properties>();
 	

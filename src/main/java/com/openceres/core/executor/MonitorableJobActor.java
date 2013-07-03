@@ -55,6 +55,7 @@ public abstract class MonitorableJobActor extends BaseJobActor
 		super();
 		actorInfo.setRole(role);
 		actorInfo.setUri(this.getSelf().path().toString());
+		logOuter = OutFactory.getInstance(AsConfiguration.getValue(Const.LOGGER_DB));
 	}
 	
 	public MonitorableJobActor(ActorRole role, String uri)
@@ -62,6 +63,7 @@ public abstract class MonitorableJobActor extends BaseJobActor
 		super();
 		actorInfo.setRole(role);
 		actorInfo.setUri(uri);
+		logOuter = OutFactory.getInstance(AsConfiguration.getValue(Const.LOGGER_DB));
 	}
 	
 	@Override

@@ -14,10 +14,6 @@ public class FrameworkConstant {
 	public final static String AKKA_MAIN_SYSTEM = "MiDE";
 	public final static String AKKA_SUB_SYSTEM = "SubMiDE";
 
-	public static int NIC_COUNT = 2;
-	
-	public final static String DB_TASK_COLLECTION = "task_log";
-
 	public static void setConfigure() {
 		AsConfiguration asConfiguration = AsConfiguration.getInstance();
 		asConfiguration.startup();
