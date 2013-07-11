@@ -1,4 +1,4 @@
-package com.openceres.example.job;
+package com.openceres.example.helloworld.job;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.openceres.example.main;
+package com.openceres.example.helloworld.main;
 
 import java.util.Date;
 
@@ -16,7 +16,7 @@ public class HelloMain {
 		sysManager.startup();
 		
 		IScheduler scheduler = QuartzScheduler.getInstance();
-		scheduler.addSchedule("Example", "Hello", "Example", "Hello", 60, new Date(), null, 10, com.openceres.example.job.HelloJob.class);
+		scheduler.addSchedule("Example", "Hello", "Example", "Hello", 60, new Date(), null, 10, com.openceres.example.helloworld.job.HelloJob.class);
 		System.out.println("HERE!!!");
 		int i = 0;
 		while(true) {

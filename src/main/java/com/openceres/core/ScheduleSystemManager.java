@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.openceres.config.AsConfiguration;
 import com.openceres.core.router.router.DefaultRouter;
+import com.openceres.core.router.router.RestletRouter;
 import com.openceres.core.scheduler.QuartzScheduler;
 import com.openceres.property.Const;
 
@@ -37,6 +38,13 @@ public class ScheduleSystemManager implements SystemManager {
 			camelContext.addRoutes(new DefaultRouter());
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
+			throw new RuntimeCamelException(e);
+		}
+		
+		try {
+			camelContext.addRoutes(new RestletRouter());
+		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeCamelException(e);
 		}
 	}

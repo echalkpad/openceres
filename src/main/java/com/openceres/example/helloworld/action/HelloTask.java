@@ -1,4 +1,4 @@
-package com.openceres.example.action;
+package com.openceres.example.helloworld.action;
 
 import java.util.Map;
 
