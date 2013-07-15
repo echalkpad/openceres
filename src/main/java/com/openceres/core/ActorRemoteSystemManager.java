@@ -45,54 +45,27 @@ public class ActorRemoteSystemManager implements Bootable, SystemManager {
 		
 		ActorManager.getInstance().start();
 		final String systemname = FrameworkConstant.AKKA_SUB_SYSTEM;
-		final String hostname  = NetworkUtil.getIpAddres();
-		final int port = 2555;
-		final String actorname = "master_" + hostname;
 		final int nrofworkers = AsConfiguration.getIntValue(Const.AKKA_WORKER_COUNT, 5);
 
+		Config conf = ConfigFactory.load();
+		system = ActorSystem.create(systemname, conf.getConfig("master").withFallback(conf));
 		
-		String confString =   
-			"akka {\n" + 
-				"\tactor {\n" +
-					"\t\tprovider = \"akka.remote.RemoteActorRefProvider\"\n" +
-				"\t}\n" +
-				"\tremote { \n" +
-					"\t\ttransport = \"akka.remote.netty.NettyRemoteTransport\"\n" +
-				    "\t\tnetty {\n" + 
-				    	"\t\t\thostname = \"" + hostname + "\"\n" +
-				    	"\t\t\tport = " + port + "\n" +
-				    "\t\t}\n" +
-			    "\t}\n" +
-			    "\tas-dispatcher {\n" +
-					"\t\ttype = \"BalancingDispatcher\"\n" +
-					"\t\texecutor = \"fork-join-executor\"\n" +
-					"\t\tthread-pool-executor { \n" +
-				  		"\t\t\tcore-pool-size-min = 2\n" +
-				  		"\t\t\tcore-pool-size-factor = 2.0\n" +
-				  		"\t\t\tcore-pool-size-max = 10\n" +
-				  	"\t\t}\n" +
-				  	"\t\tthroughput = 100\n" +
-				  	"\t\tmailbox-capacity = -1\n" +
-				  	"\t\tmailbox-type = \"\"\n" +
-			  	"\t}\n" +
-			"}\n";
-		
-		
-		Config conf = ConfigFactory.parseString(confString);
-		
-		system = ActorSystem.create(systemname, ConfigFactory.load(conf));
+		String hostname = system.settings().config().getString("akka.remote.netty.hostname");
+		if(hostname.isEmpty()) {
+			hostname = NetworkUtil.getIpAddres();
+		}
+		int port = system.settings().config().getInt("akka.remote.netty.port");
+		String actorname = "master_" + hostname;
 		
 		final String uri = "akka://" + systemname + "@" + hostname + ":" + port + "/user/" + actorname; 
 		
 		system.actorOf(new Props(new UntypedActorFactory() {
 			public UntypedActor create() {
-				return new MasterActor(uri, hostname, nrofworkers); 
+				return new MasterActor(uri, nrofworkers); 
 			}
 		}), actorname); 
 		
 		LOG.info("Master node [" + uri + "] is started");
-		LOG.debug("Configuration : \n" + confString);
-		
 	}
 	
 	@Override

@@ -20,7 +20,6 @@ import com.openceres.core.router.endpoint.CmdConsumer;
 import com.openceres.core.router.endpoint.CmdProducer;
 import com.openceres.property.Const;
 import com.openceres.property.FrameworkConstant;
-import com.openceres.was.OpenCeresWas;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -48,31 +47,9 @@ public class ActorSystemManager implements Bootable, SystemManager {
 		LOG.info("Initialize ActorSystemManager...");
 
 		ActorManager.getInstance().start();
-/*
-		String confString = 
-			"akka {\n" + 
-				"\tactor {\n" +
-					"\t\tprovider = \"akka.remote.RemoteActorRefProvider\"\n" + 
-				"\t}\n" + 
-				"\tas-dispatcher {\n" +
-					"\t\ttype = \"BalancingDispatcher\"\n" +
-					"\t\texecutor = \"fork-join-executor\"\n" +
-					"\t\tthread-pool-executor { \n" +
-				  		"\t\t\tcore-pool-size-min = 2\n" +
-				  		"\t\t\tcore-pool-size-factor = 2.0\n" +
-				  		"\t\t\tcore-pool-size-max = 10\n" +
-				  	"\t\t}\n" +
-				  	"\t\tthroughput = 100\n" +
-			  	"\t\tmailbox-capacity = -1\n" +
-			  	"\t\tmailbox-type = \"\"\n" +
-			  	"\t}\n" +
-		  	"}";
-		Config conf = ConfigFactory.parseString(confString);
-*/
-//		actorSystem = ActorSystem.create(FrameworkConstant.AKKA_MAIN_SYSTEM, ConfigFactory.load(conf));
-		actorSystem = ActorSystem.create(FrameworkConstant.AKKA_MAIN_SYSTEM);
-		
-//		LOG.debug("Configuration:\n" + confString);
+
+		Config conf = ConfigFactory.load();
+		actorSystem = ActorSystem.create(FrameworkConstant.AKKA_MAIN_SYSTEM, conf.getConfig("proxy").withFallback(conf));
 
 		// create proxy actor
 		proxyActorRef = actorSystem.actorOf(new Props(new UntypedActorFactory() {
@@ -80,7 +57,7 @@ public class ActorSystemManager implements Bootable, SystemManager {
 				return new ProxyActor();
 			}
 		}), "proxyActor");
-
+		
 		Camel camel = CamelExtension.get(actorSystem);
 		camelContext = camel.context();
 		camelContext.addComponent("jms",

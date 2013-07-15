@@ -37,6 +37,6 @@
 	<!-- Queue Connection Info -->
 	<property>
 		<name>global.queue.connection</name>
-		<value>tcp://localhost:61616</value>
+		<value>tcp://locahost:61616</value>
 	</property>
 </configuration>

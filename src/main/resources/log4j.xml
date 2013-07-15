@@ -9,12 +9,12 @@
 	</appender>
 	
 	<appender name="file" class="org.apache.log4j.rolling.RollingFileAppender">
-		<param name="file" value="/Users/allen/openceres.log" />
+		<param name="file" value="../logs/openceres.log" />
 		<param name="MaxFileSize" value="1000KB" />
 		<param name="append" value="true" />
 		<param name="encoding" value="UTF-8" />
 		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
-			<param name="FileNamePattern" value="./log/vms_op.log.%d.log" />
+			<param name="FileNamePattern" value="./log/openceres.log.%d.log" />
 		</rollingPolicy>
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%5p %d{ISO8601} %c.%M() %L - %m%n" />
