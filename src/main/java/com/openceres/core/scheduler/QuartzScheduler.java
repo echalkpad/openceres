@@ -1,4 +1,4 @@
-wpackage com.openceres.core.scheduler;
+package com.openceres.core.scheduler;
 
 import java.util.Date;
 
