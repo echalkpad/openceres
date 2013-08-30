@@ -1,5 +1,6 @@
 package com.openceres.dao;
 
+import com.openceres.dao.out.FileOut;
 import com.openceres.dao.out.MongoOut;
 import com.openceres.dao.out.Out;
 
@@ -9,8 +10,11 @@ public class OutFactory {
 		if(source.equals("MONGO"))
 		{
 			return MongoOut.getInstance();
-		} else
+		} else if(source.equals("FILE"))
 		{
+			return FileOut.getInstance();
+		} 
+		else {
 			return null;
 		}
 	}

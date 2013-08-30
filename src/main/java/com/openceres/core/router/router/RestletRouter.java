@@ -17,6 +17,8 @@ import com.openceres.core.scheduler.QuartzScheduler;
 
 public class RestletRouter extends RouteBuilder{
 	private static final Logger LOG = LoggerFactory.getLogger(RestletRouter.class);
+	
+	public final String groupName = "OpenCeres";
 
 	@Override
 	public void configure() throws Exception {
@@ -63,9 +65,37 @@ public class RestletRouter extends RouteBuilder{
 		});
 		
 		/**
+		 * GET: 스케쥴 정보를 가져온.
+		 */
+//		from("restlet:http://localhost:" + port + "/schedules/{name}?restletMethod=get")
+//		.process(new Processor() {
+//			
+//			@Override
+//            public void process(Exchange exchange) throws Exception {
+//				Map<String, Object>headersMap = exchange.getIn().getHeaders();
+//				Iterator<String> headersKeyIter = headersMap.keySet().iterator();
+//				while(headersKeyIter.hasNext())
+//				{
+//					String key = headersKeyIter.next();
+//					LOG.debug( "GET " + key + ":" + headersMap.get(key));
+//				}
+//				
+//				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//				
+//				String name = (String)exchange.getIn().getHeader("name");
+//		
+//				QuartzScheduler.getInstance()
+//				
+//				LOG.info("Shedule is added [" + groupName + "." + name + "]");
+//				
+//				exchange.getOut().setBody("SUCCESS");
+//            }
+//        });		
+		
+		/**
 		 * POST: 스케쥴 정보를 등록한다.
 		 */
-		from("restlet:http://localhost:" + port + "/schedule/add/{group}/{name}/{interval}/{starttime}/{endtime}/{repeat}/{classname}?restletMethod=post")
+		from("restlet:http://localhost:" + port + "/schedules/{name}?restletMethod=post")
 		.process(new Processor() {
 			
 			@Override
@@ -97,9 +127,9 @@ public class RestletRouter extends RouteBuilder{
         });
 		
 		/**
-		 * POST: 스케쥴 정보를 삭제한다.
+		 * DELETE: 스케쥴 정보를 삭제한다.
 		 */
-		from("restlet:http://localhost:" + port + "/schedule/delete/{group}/{name}?restletMethod=post")
+		from("restlet:http://localhost:" + port + "/schedules/{name}?restletMethod=delete")
 		.process(new Processor() {
 			
 			@Override
@@ -124,9 +154,9 @@ public class RestletRouter extends RouteBuilder{
         });
 		
 		/**
-		 * POST: 스케쥴 정보를 변경한다.
+		 * PUT: 스케쥴 정보를 변경한다.
 		 */
-		from("restlet:http://localhost:" + port + "/schedule/update/{group}/{name}/{interval}/{starttime}/{endtime}/{repeat}?restletMethod=post")
+		from("restlet:http://localhost:" + port + "/schedule/{name}?restletMethod=put")
 		.process(new Processor() {
 			
 			@Override

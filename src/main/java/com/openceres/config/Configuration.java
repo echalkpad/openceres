@@ -33,8 +33,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,7 +51,7 @@ public class Configuration<T> implements Iterable<Map.Entry<String, String>>
 	/**
 	 * Global Logger.
 	 */
-	private static final Log LOG = LogFactory.getLog (Configuration.class);
+	private static final Logger LOG = LoggerFactory.getLogger (Configuration.class);
 
 
 	private boolean quietmode = false;
@@ -1188,7 +1188,7 @@ public class Configuration<T> implements Iterable<Map.Entry<String, String>>
 			}
 			if (!"configuration".equals (root.getTagName ()))
 			{
-				LOG.fatal ("bad conf file: top-level element not <configuration>");
+				LOG.error ("bad conf file: top-level element not <configuration>");
 			}
 			NodeList props = root.getChildNodes ();
 			for (int i = 0; i < props.getLength (); i++)
@@ -1256,22 +1256,22 @@ public class Configuration<T> implements Iterable<Map.Entry<String, String>>
 		}
 		catch (IOException e)
 		{
-			LOG.fatal ("error parsing conf file: " + e);
+			LOG.error ("error parsing conf file: " + e);
 			throw new RuntimeException (e);
 		}
 		catch (DOMException e)
 		{
-			LOG.fatal ("error parsing conf file: " + e);
+			LOG.error ("error parsing conf file: " + e);
 			throw new RuntimeException (e);
 		}
 		catch (SAXException e)
 		{
-			LOG.fatal ("error parsing conf file: " + e);
+			LOG.error ("error parsing conf file: " + e);
 			throw new RuntimeException (e);
 		}
 		catch (ParserConfigurationException e)
 		{
-			LOG.fatal ("error parsing conf file: " + e);
+			LOG.error ("error parsing conf file: " + e);
 			throw new RuntimeException (e);
 		}
 	}

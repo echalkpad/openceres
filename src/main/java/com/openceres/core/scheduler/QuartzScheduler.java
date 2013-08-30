@@ -217,7 +217,7 @@ public class QuartzScheduler implements IScheduler {
 
 		return true;
 	}
-
+ 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean addSchedule(String groupId, String jobId, String triggerGroup, String triggerID,
 			int interval, Date startTime, Date endTime, int repeat, Class jobClass) {
